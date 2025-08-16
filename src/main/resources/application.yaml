@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: raffle
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: false
+  datasource:
+    driver-class-name: ${raffle.datasource.driver-class-name}
+    url: jdbc:mysql://${raffle.datasource.host}:${raffle.datasource.port}/${raffle.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${raffle.datasource.username}
+    password: ${raffle.datasource.password}
+  data:
+    redis:
+      host: ${raffle.data.redis.host}
+      port: ${raffle.data.redis.port}
+      password: ${raffle.data.redis.password}
+      lettuce:
+        pool:
+          max-active: ${raffle.data.redis.lettuce.pool.max-active}
+          max-idle: ${raffle.data.redis.lettuce.pool.max-idle}
+          min-idle: ${raffle.data.redis.lettuce.pool.min-idle}
+          time-between-eviction-runs: ${raffle.data.redis.lettuce.pool.time-between-eviction-runs}
+# 设置mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: a311.college.entity
+  configuration:
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+
+# 设置pageHelper分页插件
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+
+# 设置阿里云OSS
+college:
+  aliyun:
+    oss:
+      endpoint: ${raffle.aliyun.oss.endpoint}
+      bucket-name: ${raffle.aliyun.oss.bucket-name}

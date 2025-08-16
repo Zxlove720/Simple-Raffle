@@ -1,0 +1,26 @@
+raffle:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: 127.0.0.1
+    port: 3306
+    database: raffle
+    username: root
+    password: 123456
+
+  data:
+    redis:
+      host: 8.137.37.221
+      port: 6379
+      password: 262460wzbWZB...
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 1
+          time-between-eviction-runs: 10s
+
+
+  aliyun:
+    oss:
+      endpoint: oss-cn-chengdu.aliyuncs.com
+      bucket-name: wzb-study
