@@ -1,6 +1,6 @@
 package com.wzb.controller;
 
-import com.wzb.server.RaffleServer;
+import com.wzb.server.RaffleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/raffle")
 public class RaffleController {
 
-    private final RaffleServer raffleServer;
+    private final RaffleService raffleServer;
 
     @Autowired
-    public RaffleController(RaffleServer raffleServer) {
+    public RaffleController(RaffleService raffleServer) {
         this.raffleServer = raffleServer;
     }
 

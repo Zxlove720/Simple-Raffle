@@ -1,6 +1,6 @@
 package com.wzb.server;
 
-public interface RaffleServer {
+public interface RaffleService {
 
     void raffle();
 
