@@ -1,4 +1,4 @@
-package com.wzb.pojo;
+package com.wzb.pojo.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

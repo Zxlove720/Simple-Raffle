@@ -1,9 +1,10 @@
 package com.wzb.server;
 
-import com.wzb.pojo.User;
+import com.wzb.pojo.dto.UserLoginDTO;
+import com.wzb.pojo.entity.User;
 
 public interface UserService {
 
-    void register(User user);
+    User login(UserLoginDTO userLoginDTO);
 
 }

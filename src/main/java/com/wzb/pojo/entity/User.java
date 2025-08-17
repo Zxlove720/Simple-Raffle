@@ -1,4 +1,4 @@
-package com.wzb.pojo;
+package com.wzb.pojo.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -16,16 +16,22 @@ public class User {
     @Schema(description = "用户id")
     private Integer userId;
 
+    @Schema(description = "微信登录标识符")
+    private String openid;
+
+    @Schema(description = "用户状态 0普通用户|1管理员|2封禁用户")
+    private Integer status;
+
     @Schema(description = "手机号")
     private String phone;
 
-    @Schema(description = "密码")
-    private String password;
+    @Schema(description = "用户头像")
+    private String avatar;
 
     @Schema(description = "昵称")
     private String nickname;
 
-    @Schema(description = "剩余抽奖机会")
+    @Schema(description = "剩余抽奖次数")
     private String chance;
 
     @Schema(description = "获得奖品")
