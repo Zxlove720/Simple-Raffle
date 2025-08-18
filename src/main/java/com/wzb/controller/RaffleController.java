@@ -1,5 +1,6 @@
 package com.wzb.controller;
 
+import com.wzb.pojo.entity.Result;
 import com.wzb.server.RaffleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,10 @@ public class RaffleController {
     /**
      * 用户抽奖
      */
-    @PostMapping
-    public void raffle() {
-        raffleServer.raffle();
+    @PostMapping("/draw")
+    public Result<Void> draw() {
+        raffleServer.draw();
+        return Result.success();
     }
 
 

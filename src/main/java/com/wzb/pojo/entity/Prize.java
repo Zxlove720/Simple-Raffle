@@ -19,7 +19,5 @@ public class Prize {
     private Integer totalStock;
     // 实时库存
     private Integer remainingStock;
-    // 中奖概率
-    private Double probability;
 
 }
