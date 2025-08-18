@@ -18,4 +18,5 @@ public interface RaffleMapper {
 
     @Update("update prize set remaining_stock = (remaining_stock - 1) where id = #{prizeId}")
     void changeStock(Integer prizeId);
+
 }
