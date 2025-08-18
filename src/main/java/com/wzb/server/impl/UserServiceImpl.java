@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             user = User.builder()
                     .openid(openid)
+                    .status(0)
                     .nickname("用户" + RandomUtil.randomString(5))
                     .chance(0)
                     .prizes(new ArrayList<>())

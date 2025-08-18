@@ -36,7 +36,6 @@ public class UserController {
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户微信登录");
         User user = userService.login(userLoginDTO);
-        // 通过id、openid创建一个VO返回
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .id(user.getUserId())
                 .openid(user.getOpenid())
