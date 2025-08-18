@@ -47,15 +47,15 @@ public class RaffleServiceImpl implements RaffleService {
 
     @Transactional
     public Prize startDraw(User user) {
-        // 3.开始抽奖，确保多线程安全
-        // 3.1获取总概率
+        // 1.开始抽奖，确保多线程安全
+        // 1.1获取总概率
         List<Prize> allPrize = raffleMapper.getAllPrize();
         Map<Integer, Integer> prizeMap = new HashMap<>();
         for (Prize prize : allPrize) {
             prizeMap.put(prize.getId(), prize.getRemainingStock());
         }
         int totalWeight = prizeMap.values().stream().mapToInt(i -> i).sum();
-        // 3.2获取随机值
+        // 1.2获取随机值
         int randomNumber = new Random().nextInt(totalWeight);
         Integer prizeId = 0;
         for (Map.Entry<Integer, Integer> entry : prizeMap.entrySet()) {
@@ -64,17 +64,17 @@ public class RaffleServiceImpl implements RaffleService {
                 break;
             }
         }
-        // 4.获取抽奖结果，减少库存，并将其加入用户奖品中
-        // 4.1获取抽奖结果
+        // 2.获取抽奖结果，减少库存，并将其加入用户奖品中
+        // 2.1获取抽奖结果
         Prize prize = raffleMapper.getById(prizeId);
-        // 4.2减少奖品库存
+        // 2.2减少奖品库存
         raffleMapper.changeStock(prizeId);
-        // 4.3将其加入用户奖品中
+        // 2.3将其加入用户奖品中
         List<Integer> prizes = user.getPrizes();
         prizes.add(prizeId);
         String prizesJson = JSONUtil.toJsonStr(prizes);
         userMapper.addPrize(prizesJson, user.getUserId());
-        // 5.返回抽奖结果
+        // 3.返回抽奖结果
         return prize;
     }
 
