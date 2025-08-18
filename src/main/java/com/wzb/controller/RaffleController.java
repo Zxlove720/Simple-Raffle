@@ -1,6 +1,9 @@
 package com.wzb.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.wzb.pojo.entity.Prize;
 import com.wzb.pojo.entity.Result;
+import com.wzb.pojo.vo.PrizeVO;
 import com.wzb.server.RaffleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +25,10 @@ public class RaffleController {
      * 用户抽奖
      */
     @PostMapping("/draw")
-    public Result<Void> draw() {
-        raffleServer.draw();
-        return Result.success();
+    public Result<PrizeVO> draw() {
+        Prize prize = raffleServer.draw();
+        PrizeVO prizeVO = BeanUtil.copyProperties(prize, PrizeVO.class);
+        return Result.success(prizeVO);
     }
 
 
