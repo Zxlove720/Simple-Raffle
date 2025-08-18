@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "用户微信登录DTO")
 public class UserLoginDTO {
 
+    @Schema(description = "登录授权码")
     private String code;
 
 }
