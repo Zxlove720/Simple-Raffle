@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -27,6 +25,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * 用户登录注册
+     * 用户登录，如果用户是第一次登录，那么就自动进行注册
+     *
+     * @param userLoginDTO 用户登录DTO
+     * @return Result<UserLoginVO>
+     */
     @PostMapping("/register")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户微信登录");
