@@ -34,7 +34,7 @@ public class User {
     private String nickname;
 
     @Schema(description = "剩余抽奖次数")
-    private String chance;
+    private Integer chance;
 
     @Schema(description = "获得奖品")
     private List<Integer> prizes;

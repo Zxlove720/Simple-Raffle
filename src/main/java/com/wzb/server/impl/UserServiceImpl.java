@@ -1,5 +1,6 @@
 package com.wzb.server.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wzb.mapper.UserMapper;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,26 +36,36 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
-
+    /**
+     * 用户登录
+     *
+     * @param userLoginDTO 用户登录DTO
+     * @return User实体
+     */
     @Override
     public User login(UserLoginDTO userLoginDTO) {
-        // 通过封装的getOpenid函数获得用户的openid
+        // 1.通过封装的getOpenid函数获得用户的openid
         String openid = getOpenid(userLoginDTO.getCode());
-        // 判断是否成功获得openid，若openid为空则登录失败，抛出异常
+        // 1.1判断是否成功获得openid，若openid为空则登录失败，抛出异常
         if (openid == null) {
             throw new RuntimeException("登录失败");
         }
-        // 判断当前用户是否为新用户
+        // 2.判断当前用户是否为新用户
         User user = userMapper.getByOpenid(openid);
-        // 如果是新用户，那么自动完成注册，将其保存到数据库
+        // 2.1如果是新用户，那么自动完成注册，将其保存到数据库
         if (user == null) {
             user = User.builder()
                     .openid(openid)
+                    .nickname("用户" + RandomUtil.randomString(5))
+                    .chance(0)
+                    .prizes(new ArrayList<>())
                     .createTime(LocalDateTime.now())
+                    .updateTime(LocalDateTime.now())
                     .build();
+            // 2.2自动注册
             userMapper.insert(user);
         }
-        // 返回该用户对象
+        // 3返回该用户
         return user;
     }
 
@@ -61,8 +73,8 @@ public class UserServiceImpl implements UserService {
     /**
      * 调用微信的接口服务，获取微信用户的openid
      *
-     * @param code
-     * @return
+     * @param code 登录授权码
+     * @return 用户openid
      */
     private String getOpenid(String code) {
         // 这个hashMap是为了存储向微信服务器发送请求时需要的参数，就是请求参数，封装成map
@@ -85,10 +97,8 @@ public class UserServiceImpl implements UserService {
     private static String doGet(Map<String, String> paramMap) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
-
         String result = "";
         CloseableHttpResponse response = null;
-
         try {
             URIBuilder builder = new URIBuilder(WECHAT_LOGIN);
             if (paramMap != null) {
@@ -97,13 +107,10 @@ public class UserServiceImpl implements UserService {
                 }
             }
             URI uri = builder.build();
-
             //创建GET请求
             HttpGet httpGet = new HttpGet(uri);
-
             //发送请求
             response = httpClient.execute(httpGet);
-
             //判断响应状态
             if (response.getStatusLine().getStatusCode() == 200) {
                 result = EntityUtils.toString(response.getEntity(), "UTF-8");
@@ -112,7 +119,9 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
         } finally {
             try {
-                response.close();
+                if (response != null) {
+                    response.close();
+                }
                 httpClient.close();
             } catch (IOException e) {
                 e.printStackTrace();
