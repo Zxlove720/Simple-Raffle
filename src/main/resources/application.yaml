@@ -37,9 +37,14 @@ pagehelper:
   helper-dialect: mysql
   reasonable: true
 
-# 设置阿里云OSS
-college:
-  aliyun:
-    oss:
-      endpoint: ${raffle.aliyun.oss.endpoint}
-      bucket-name: ${raffle.aliyun.oss.bucket-name}
+raffle:
+  wechat:
+    appid: ${raffle.wechat.appid}
+    secret: ${raffle.wechat.secret}
+    mchid: ${raffle.wechat.mchid}
+    mchSerialNo: ${raffle.wechat.mchSerialNo}
+    privateKeyFilePath: ${raffle.wechat.privateKeyFilePath}
+    apiV3Key: ${raffle.wechat.apiV3Key}
+    weChatPayCertFilePath: ${raffle.wechat.weChatPayCertFilePath}
+    notifyUrl: ${raffle.wechat.notifyUrl}
+    refundNotifyUrl: ${raffle.wechat.refundNotifyUrl}

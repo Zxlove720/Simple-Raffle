@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wzb.mapper.UserMapper;
 import com.wzb.pojo.dto.UserLoginDTO;
 import com.wzb.pojo.entity.User;
+import com.wzb.properties.WechatProperties;
 import com.wzb.server.UserService;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -31,9 +32,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
 
+    private final WechatProperties wechatProperties;
+
     @Autowired
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, WechatProperties wechatProperties) {
         this.userMapper = userMapper;
+        this.wechatProperties = wechatProperties;
     }
 
     /**
@@ -81,9 +85,9 @@ public class UserServiceImpl implements UserService {
         // 这个hashMap是为了存储向微信服务器发送请求时需要的参数，就是请求参数，封装成map
         Map<String, String> map = new HashMap<>();
         // 封装小程序的appid
-        map.put("appid", "wxf248bb3cbecdf8b0");
+        map.put("appid", wechatProperties.getAppid());
         // 封装小程序对应的密钥
-        map.put("secret", "e1476dfdb10be16941a4010e4c94d435");
+        map.put("secret", wechatProperties.getSecret());
         // 封装小程序的临时登录凭证
         map.put("js_code", code);
         // 封装授权类型，这里的授权类型是：表示通过使用授权码（临时登录凭证）获取openid    
