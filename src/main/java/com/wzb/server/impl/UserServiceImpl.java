@@ -1,13 +1,19 @@
 package com.wzb.server.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wzb.constant.RedisConstant;
+import com.wzb.constant.WechatConstant;
 import com.wzb.mapper.UserMapper;
 import com.wzb.pojo.dto.UserLoginDTO;
 import com.wzb.pojo.entity.User;
 import com.wzb.properties.WechatProperties;
 import com.wzb.server.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -25,11 +31,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     // 需要服务端请求的微信服务的接口地址
-    public static final String WECHAT_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
 
     private final UserMapper userMapper;
 
@@ -60,20 +66,17 @@ public class UserServiceImpl implements UserService {
         }
         // 2.判断当前用户是否为新用户
         User user = userMapper.getByOpenid(openid);
-        // 2.1如果是新用户，那么自动完成注册，将其保存到数据库
         if (user == null) {
-            user = User.builder()
-                    .openid(openid)
-                    .status(0)
-                    .nickname("用户" + RandomUtil.randomString(5))
-                    .chance(0)
-                    .prizes(new ArrayList<>())
-                    .createTime(LocalDateTime.now())
-                    .updateTime(LocalDateTime.now())
-                    .build();
-            // 2.2自动注册
-            userMapper.insert(user);
+            // 2.1如果是新用户，那么自动完成注册，将其保存到数据库
+            user = register(openid);
         }
+        String token = UUID.randomUUID(false).toString();
+        Map<String, Object> userMap = BeanUtil.beanToMap(user, new HashMap<>(),
+                CopyOptions
+                        .create()
+                        .ignoreNullValue()
+                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
+        stringRedisTemplate.opsForHash().putAll(RedisConstant.USER_LOGIN_KEY + token, userMap);
         // 3返回该用户
         return user;
     }
@@ -109,7 +112,7 @@ public class UserServiceImpl implements UserService {
         String result = "";
         CloseableHttpResponse response = null;
         try {
-            URIBuilder builder = new URIBuilder(WECHAT_LOGIN);
+            URIBuilder builder = new URIBuilder(WechatConstant.WECHAT_LOGIN);
             if (paramMap != null) {
                 for (String key : paramMap.keySet()) {
                     builder.addParameter(key, paramMap.get(key));
@@ -137,6 +140,27 @@ public class UserServiceImpl implements UserService {
             }
         }
         return result;
+    }
+
+    /**
+     * 新用户注册
+     *
+     * @param openid openid
+     * @return User实体
+     */
+    private User register(String openid) {
+        User user = User.builder()
+                .openid(openid)
+                .status(0)
+                .nickname("用户" + RandomUtil.randomString(5))
+                .chance(0)
+                .prizes(new ArrayList<>())
+                .createTime(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
+                .build();
+        // 2.2自动注册
+        userMapper.insert(user);
+        return user;
     }
 
 }
