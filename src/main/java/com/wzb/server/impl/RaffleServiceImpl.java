@@ -107,7 +107,7 @@ public class RaffleServiceImpl implements RaffleService {
             }
             // 4. 更新用户奖品（原子操作）
             User user = ThreadUtil.getUser();
-            userMapper.addPrizeAtomically(user.getUserId(), prizeId);
+            userMapper.addPrize(prizeId, user.getUserId());
             return raffleMapper.getById(prizeId);
         } catch (Exception e) {
             // 已配置rollbackFor=Exception.class，无需手动处理

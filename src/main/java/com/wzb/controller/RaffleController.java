@@ -25,7 +25,7 @@ public class RaffleController {
      * 用户抽奖
      */
     @PostMapping("/draw")
-    public Result<PrizeVO> draw() {
+    public Result<PrizeVO> draw() throws InterruptedException {
         Prize prize = raffleServer.draw();
         PrizeVO prizeVO = BeanUtil.copyProperties(prize, PrizeVO.class);
         return Result.success(prizeVO);
