@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wzb.mapper.ShopMapper">
+    <update id="updatePrize">
+        update prize
+        <set>
+            <if test="name != null and name ! = ''">
+                name = #{name}
+            </if>
+            <if test="totalStock != null">
+                total_stock = #{totalStock}
+            </if>
+            <if test="remainingStock != null">
+                remaining_stock = #{remainingStock}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

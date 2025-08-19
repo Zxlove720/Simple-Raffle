@@ -5,8 +5,8 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         <!-- useGenerateKeys是希望数据库自动生成主键值
              keyProperty="id"是将数据库自动生成的主键值设置到id上-->
-        insert into user (openid, name, phone, sex, id_number, avatar, create_time)
-        values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
+        insert into user (openid, name, phone, sex, id_number, avatar)
+        values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar})
     </insert>
 
     <select id="countUsersByTime" resultType="java.lang.Integer">
