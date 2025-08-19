@@ -36,7 +36,6 @@ public class RaffleServiceImpl implements RaffleService {
     }
 
     @Override
-    @Transactional
     public Prize draw() {
         User user = ThreadUtil.getUser();
         // 1.校验用户的状态，被封禁的用户不可抽奖
@@ -52,49 +51,66 @@ public class RaffleServiceImpl implements RaffleService {
 
     @Transactional
     public Prize startDraw() {
+        // 最大重试次数
+        int maxRetries = 3;
+        // 重试间隔(毫秒)
+        long retryInterval = 400;
+        int retryCount = 0;
+        Prize prize = null;
         // 1.开始抽奖，确保多线程安全
-        if (!tryLock()) {
-            throw new RuntimeException("获取锁失败");
-        }
-        try {
-            // 1.1获取总权重
-            List<Prize> allPrize = raffleMapper.getAllPrize();
-            Map<Integer, Integer> prizeMap = new HashMap<>();
-            int totalWeight = 0;
-            for (Prize prize : allPrize) {
-                int remainingStock = prize.getRemainingStock();
-                if (remainingStock > 0) {
-                    prizeMap.put(prize.getId(), remainingStock);
-                    totalWeight += remainingStock;
+        while (retryCount < maxRetries) {
+            if (tryLock()) {
+                try {
+                    // 1.1获取总权重
+                    List<Prize> allPrize = raffleMapper.getAllPrize();
+                    Map<Integer, Integer> prizeMap = new HashMap<>();
+                    int totalWeight = 0;
+                    for (Prize prizeTemp : allPrize) {
+                        int remainingStock = prizeTemp.getRemainingStock();
+                        if (remainingStock > 0) {
+                            prizeMap.put(prizeTemp.getId(), remainingStock);
+                            totalWeight += remainingStock;
+                        }
+                    }
+                    // 1.2此时总权重不合法（所有奖品库存不足）
+                    if (totalWeight <= 0) {
+                        throw new RuntimeException("奖品库存不足");
+                    }
+                    // 1.2获取随机值
+                    int randomNumber = ThreadLocalRandom.current().nextInt(totalWeight);
+                    Integer sum = 0;
+                    Integer prizeId = 0;
+                    for (Map.Entry<Integer, Integer> entry : prizeMap.entrySet()) {
+                        sum += entry.getValue();
+                        Integer remainValue = entry.getValue();
+                        if (randomNumber < sum && remainValue > 0) {
+                            prizeId = entry.getKey();
+                            break;
+                        }
+                    }
+                    // 2.获取抽奖结果，减少库存，并将其加入用户奖品中
+                    // 2.1获取抽奖结果
+                    prize = raffleMapper.getById(prizeId);
+                    // 2.2减少奖品库存并加入用户奖品
+                    updateStock(prize);
+                } catch (Exception e) {
+                    throw new RuntimeException("抽奖出现问题");
+                } finally {
+                    unlock();
                 }
+
             }
-            // 1.2此时总权重不合法（所有奖品库存不足）
-            if (totalWeight <= 0) {
-                throw new RuntimeException("奖品库存不足");
+            retryCount++;
+            try {
+                // 休眠等待
+                Thread.sleep(retryInterval);
+            } catch (InterruptedException e) {
+                // 恢复中断状态
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("抽奖被中断");
             }
-            // 1.2获取随机值
-            int randomNumber = ThreadLocalRandom.current().nextInt(totalWeight);
-            Integer sum = 0;
-            Integer prizeId = 0;
-            for (Map.Entry<Integer, Integer> entry : prizeMap.entrySet()) {
-                sum += entry.getValue();
-                Integer remainValue = entry.getValue();
-                if (randomNumber < sum && remainValue > 0) {
-                    prizeId = entry.getKey();
-                    break;
-                }
-            }
-            // 2.获取抽奖结果，减少库存，并将其加入用户奖品中
-            // 2.1获取抽奖结果
-            Prize prize = raffleMapper.getById(prizeId);
-            // 2.2减少奖品库存并加入用户奖品
-            updateStock(prize);
-            return prize;
-        } catch(Exception e) {
-            throw new RuntimeException("抽奖出现问题");
-        } finally {
-            unlock();
         }
+        return prize;
     }
 
     @Transactional
