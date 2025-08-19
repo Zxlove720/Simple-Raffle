@@ -30,12 +30,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-
-    // 需要服务端请求的微信服务的接口地址
 
     private final UserMapper userMapper;
 
@@ -77,6 +76,7 @@ public class UserServiceImpl implements UserService {
                         .ignoreNullValue()
                         .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
         stringRedisTemplate.opsForHash().putAll(RedisConstant.USER_LOGIN_KEY + token, userMap);
+        stringRedisTemplate.expire(RedisConstant.USER_LOGIN_KEY + token, RedisConstant.USER_LOGIN_TTL, TimeUnit.HOURS);
         // 3返回该用户
         return user;
     }
