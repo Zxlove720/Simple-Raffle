@@ -154,7 +154,6 @@ public class UserServiceImpl implements UserService {
                 .status(0)
                 .nickname("用户" + RandomUtil.randomString(5))
                 .chance(0)
-                .prizes(new ArrayList<>())
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .build();

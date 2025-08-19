@@ -4,6 +4,8 @@ import com.wzb.pojo.entity.Prize;
 
 public interface RaffleService {
 
-    Prize draw();
+    Prize draw() throws InterruptedException;
+
+    Prize executeDraw();
 
 }

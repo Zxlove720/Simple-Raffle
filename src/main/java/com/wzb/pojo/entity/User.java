@@ -36,9 +36,6 @@ public class User {
     @Schema(description = "剩余抽奖次数")
     private Integer chance;
 
-    @Schema(description = "获得奖品")
-    private List<Integer> prizes;
-
     @Schema(description = "注册时间")
     private LocalDateTime createTime;
 
