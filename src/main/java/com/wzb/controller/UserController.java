@@ -3,6 +3,7 @@ package com.wzb.controller;
 import com.wzb.pojo.dto.UserLoginDTO;
 import com.wzb.pojo.entity.Result;
 import com.wzb.pojo.entity.User;
+import com.wzb.pojo.vo.PrizeVO;
 import com.wzb.pojo.vo.UserLoginVO;
 import com.wzb.server.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @Slf4j
@@ -43,4 +46,15 @@ public class UserController {
         return Result.success(userLoginVO);
     }
 
+    /**
+     * 查看用户中奖情况
+     *
+     * @return List<PrizeVO> 奖品列表
+     */
+    @PostMapping("/show")
+    public Result<List<PrizeVO>> showPrize() {
+        log.info("用户查看中奖情况");
+        List<PrizeVO> prizeVOList = userService.showPrize();
+        return Result.success(prizeVOList);
+    }
 }

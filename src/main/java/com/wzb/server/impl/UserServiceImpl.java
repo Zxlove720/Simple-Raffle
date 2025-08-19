@@ -11,8 +11,10 @@ import com.wzb.constant.WechatConstant;
 import com.wzb.mapper.UserMapper;
 import com.wzb.pojo.dto.UserLoginDTO;
 import com.wzb.pojo.entity.User;
+import com.wzb.pojo.vo.PrizeVO;
 import com.wzb.properties.WechatProperties;
 import com.wzb.server.UserService;
+import com.wzb.util.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -79,7 +82,6 @@ public class UserServiceImpl implements UserService {
         // 3返回该用户
         return user;
     }
-
 
     /**
      * 调用微信的接口服务，获取微信用户的openid
@@ -159,6 +161,12 @@ public class UserServiceImpl implements UserService {
         // 2.2自动注册
         userMapper.insert(user);
         return user;
+    }
+
+    @Override
+    public List<PrizeVO> showPrize() {
+        Integer userId = ThreadUtil.getUser().getUserId();
+        return userMapper.showPrize(userId);
     }
 
 }

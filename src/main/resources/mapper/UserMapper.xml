@@ -21,4 +21,8 @@
         </where>
     </select>
 
+    <select id="showPrize" resultType="com.wzb.pojo.vo.PrizeVO">
+        select up.create_time, p.name from user_prize as up left join prize as p on up.prize_id = p.id order by up.create_time desc
+    </select>
+
 </mapper>
