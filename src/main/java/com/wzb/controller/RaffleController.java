@@ -31,5 +31,4 @@ public class RaffleController {
         return Result.success(prizeVO);
     }
 
-
 }
