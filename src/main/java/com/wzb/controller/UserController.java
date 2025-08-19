@@ -32,7 +32,7 @@ public class UserController {
      * @param userLoginDTO 用户登录DTO
      * @return Result<UserLoginVO>
      */
-    @PostMapping("/register")
+    @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户微信登录");
         User user = userService.login(userLoginDTO);
