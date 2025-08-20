@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.wzb.mapper.UserMapper">
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         <!-- useGenerateKeys是希望数据库自动生成主键值
              keyProperty="id"是将数据库自动生成的主键值设置到id上-->
-        insert into user (openid, name, phone, sex, id_number, avatar)
-        values (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar})
+        insert into user (openid, status, phone, avatar, nickname, chance)
+        values (#{openid}, #{status}, #{phone}, #{avatar}, #{nickname}, #{chance})
     </insert>
 
     <select id="countUsersByTime" resultType="java.lang.Integer">

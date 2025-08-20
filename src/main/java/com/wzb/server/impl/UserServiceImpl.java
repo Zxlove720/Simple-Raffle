@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
                 CopyOptions
                         .create()
                         .ignoreNullValue()
-                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));
+                        .setFieldValueEditor((fieldName, fieldValue) -> fieldValue != null ? fieldValue.toString() : ""));
         stringRedisTemplate.opsForHash().putAll(RedisConstant.USER_LOGIN_KEY + token, userMap);
         stringRedisTemplate.expire(RedisConstant.USER_LOGIN_KEY + token, RedisConstant.USER_LOGIN_TTL, TimeUnit.HOURS);
         // 3返回该用户
@@ -154,7 +154,8 @@ public class UserServiceImpl implements UserService {
                 .openid(openid)
                 .status(0)
                 .nickname("用户" + RandomUtil.randomString(5))
-                .chance(0)
+                .avatar("https://123.com")
+                .chance(1)
                 .createTime(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .build();
