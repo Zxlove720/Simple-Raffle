@@ -55,10 +55,10 @@ public class UserServiceImpl implements UserService {
      * 用户登录
      *
      * @param userLoginDTO 用户登录DTO
-     * @return User实体
+     * @return token 登录凭证
      */
     @Override
-    public User login(UserLoginDTO userLoginDTO) {
+    public String login(UserLoginDTO userLoginDTO) {
         // 1.通过封装的getOpenid函数获得用户的openid
         String openid = getOpenid(userLoginDTO.getCode());
         // 1.1判断是否成功获得openid，若openid为空则登录失败，抛出异常
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         stringRedisTemplate.opsForHash().putAll(RedisConstant.USER_LOGIN_KEY + token, userMap);
         stringRedisTemplate.expire(RedisConstant.USER_LOGIN_KEY + token, RedisConstant.USER_LOGIN_TTL, TimeUnit.HOURS);
         // 3返回该用户
-        return user;
+        return token;
     }
 
     /**

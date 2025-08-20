@@ -16,10 +16,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "用户登录信息返回VO")
 public class UserLoginVO {
 
-    @Schema(description = "用户id")
-    private Integer id;
-
-    @Schema(description = "微信登录标识符")
-    private String openid;
+    @Schema(description = "用户登录凭证")
+    private String token;
 
 }

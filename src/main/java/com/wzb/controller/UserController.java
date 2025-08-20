@@ -38,13 +38,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        log.error("用户微信登录");
-        User user = userService.login(userLoginDTO);
-        UserLoginVO userLoginVO = UserLoginVO.builder()
-                .id(user.getUserId())
-                .openid(user.getOpenid())
-                .build();
-        return Result.success(userLoginVO);
+        log.info("用户微信登录");
+        String token = userService.login(userLoginDTO);
+        return Result.success(new UserLoginVO(token));
     }
 
     @PostMapping("/info")

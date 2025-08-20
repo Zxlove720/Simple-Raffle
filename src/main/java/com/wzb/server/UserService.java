@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User login(UserLoginDTO userLoginDTO);
+    String login(UserLoginDTO userLoginDTO);
 
     List<PrizeVO> showPrize();
 
