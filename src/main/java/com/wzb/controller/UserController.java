@@ -6,6 +6,7 @@ import com.wzb.pojo.entity.User;
 import com.wzb.pojo.vo.PrizeVO;
 import com.wzb.pojo.vo.UserLoginVO;
 import com.wzb.server.UserService;
+import com.wzb.util.ThreadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +38,7 @@ public class UserController {
      */
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        log.info("用户微信登录");
+        log.error("用户微信登录");
         User user = userService.login(userLoginDTO);
         UserLoginVO userLoginVO = UserLoginVO.builder()
                 .id(user.getUserId())
@@ -45,6 +46,12 @@ public class UserController {
                 .build();
         return Result.success(userLoginVO);
     }
+
+    @PostMapping("/info")
+    public Result<User> info() {
+        return Result.success(ThreadUtil.getUser());
+    }
+
 
     /**
      * 查看用户中奖情况

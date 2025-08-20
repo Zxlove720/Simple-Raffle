@@ -18,10 +18,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ShopInterceptor())
+                .excludePathPatterns(
+                        "/user/login"
+                )
                 .order(2);
         registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns(
-                    "user/login"
+                        "/user/login"
                 ).order(1);
         registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate))
                 .order(0);
