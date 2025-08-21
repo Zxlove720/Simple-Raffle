@@ -78,4 +78,5 @@ public class Result<T> {
         result.responseData = data;
         return result;
     }
+
 }
